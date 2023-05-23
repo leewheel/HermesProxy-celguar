@@ -5,7 +5,11 @@ https://github.com/WowLegacyCore/HermesProxy
 
 CSV
 
-https://github.com/zelazrgn/Everlook-HermesProxy-CSV
+https://github.com/zelazrgn/Everlook-HermesProxy-CSV  
+
+# 免责声明
+请注意，此开源项目仅用于个人和非商业用途。被许可人不得将本项目用于私服或商业目的。任何人都可以下载、使用、修改以及分发本项目的代码，但在使用中需要自行承担责任。我们在法律范围内尽力保证软件的有效性和可用性，但是不能保证软件不会出现缺陷或错误。因此，被许可人必须自行承担软件使用的风险和责任，作者不对误用本项目所引起的任何问题或损失负有法律责任。如果被许可人不同意本声明的内容，请勿使用本项目。  
+
 
 # 说明
 这个版本是在HermesProxy不更新的时间里，我尝试去对HermesProxy进行一些修复。  
