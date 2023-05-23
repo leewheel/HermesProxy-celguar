@@ -14,7 +14,7 @@ https://github.com/zelazrgn/Everlook-HermesProxy-CSV
 # 说明
 这个版本是在HermesProxy不更新的时间里，我尝试去对HermesProxy进行一些修复。  
 
-本人并不是游戏相关从业者，如果你有更好的修复方案，或者你有想让我修复的BUG，可以尝试在我的主页与我联系
+本人并不是游戏相关从业者，只是一个爱好者，出于爱好和以及学习的目的。这是一个不成熟的测试产品，因此建议仅供专业人员内部交流使用。
 
 # 修复内容 
 1 野兽之眼BUG  
@@ -24,8 +24,6 @@ https://github.com/zelazrgn/Everlook-HermesProxy-CSV
 # 我的主页
 
 [肥羊会飞正在创作黑兔经典魔兽助手 | 爱发电 (afdian.net)](https://afdian.net/a/wowheitu)
-
-我开发了一款魔兽世界私人服务器助手，欢迎大家下载体验。
 
 
 ## 下载
