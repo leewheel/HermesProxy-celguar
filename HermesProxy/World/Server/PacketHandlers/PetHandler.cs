@@ -114,5 +114,14 @@ namespace HermesProxy.World.Server
             packet.WriteUInt32(cancel.SpellID);
             SendPacketToServer(packet);
         }
+
+        [PacketHandler(Opcode.CMSG_REQUEST_PET_INFO)]
+        void HandleRequestPetInfo(PetInfoRequest r)
+        {
+            // zyf 修复CMSG_REQUEST_PET_INFO协议的传输问题
+            WorldPacket packet = new WorldPacket(Opcode.CMSG_REQUEST_PET_INFO);
+            SendPacketToServer(packet);
+
+        }
     }
 }

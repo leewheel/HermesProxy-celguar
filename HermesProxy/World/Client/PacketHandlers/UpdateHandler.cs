@@ -310,10 +310,28 @@ namespace HermesProxy.World.Client
                 var guid = packet.ReadPackedGuid().To128(GetSession().GameState);
                 PrintString($"Guid = {objCount}", index, j);
                 GetSession().GameState.ObjectCacheMutex.WaitOne();
+
+                // zyf 优化一下，只保留当前玩家
+                if (guid != GetSession().GameState.CurrentPlayerGuid)
+                {
+                    GetSession().GameState.ObjectCacheLegacy.Remove(guid);
+                    GetSession().GameState.ObjectCacheModern.Remove(guid);
+                }
+
                 GetSession().GameState.ObjectCacheLegacy.Remove(guid);
                 GetSession().GameState.ObjectCacheModern.Remove(guid);
                 GetSession().GameState.ObjectCacheMutex.ReleaseMutex();
                 GetSession().GameState.LastAuraCasterOnTarget.Remove(guid);
+
+                // zyf 如果是宠物过远，先发送一个SMSG_UPDATE_OBJECT协议
+                if (GetSession().GameState.CurrentPetGuid == guid)
+                {
+                    UpdateObject updateObject2 = new UpdateObject(GetSession().GameState);
+                    ObjectUpdate updateData2 = new ObjectUpdate(guid, UpdateTypeModern.Values, GetSession());
+                    updateObject2.ObjectUpdates.Add(updateData2);
+                    SendPacketToClient(updateObject2);
+
+                }
                 updateObject.OutOfRangeGuids.Add(guid);
             }
         }

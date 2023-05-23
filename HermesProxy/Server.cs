@@ -4,15 +4,11 @@ using Framework.Networking;
 using HermesProxy.World;
 using HermesProxy.World.Server;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using BNetServer;
@@ -37,6 +33,9 @@ namespace HermesProxy
             Log.Print(LogType.Server, "Starting Hermes Proxy...");
             Log.Print(LogType.Server, $"Version {GetVersionInformation()}");
             Log.Start();
+
+            Log.Print(LogType.Server, "小黑兔魔兽助手修改版");
+            Log.Print(LogType.Server, "小黑兔官网: https://afdian.net/a/wowheitu");
 
             if (Environment.CurrentDirectory != Path.GetDirectoryName(AppContext.BaseDirectory))
             {
@@ -79,6 +78,8 @@ namespace HermesProxy
 
             Log.Print(LogType.Server, $"Modern (Client) Build: {Settings.ClientBuild}");
             Log.Print(LogType.Server, $"Legacy (Server) Build: {Settings.ServerBuild}");
+
+
 
             GameData.LoadEverything();
 
@@ -130,44 +131,47 @@ namespace HermesProxy
 
         private static async Task CheckForUpdate()
         {
-            const string hermesGitHubRepo = "WowLegacyCore/HermesProxy";
+            // 我为什么注释？ 因为中国人非常难以登录github
+            return;
 
-            try
-            {
-                if (GitVersionInformation.CommitsSinceVersionSource != "0" || GitVersionInformation.UncommittedChanges != "0")
-                    return; // we are probably in a test branch
+            //const string hermesGitHubRepo = "WowLegacyCore/HermesProxy";
 
-                using var client = new HttpClient();
-                client.Timeout = TimeSpan.FromSeconds(5);
-                client.DefaultRequestHeaders.Add("User-Agent", "curl/7.0.0"); // otherwise we get blocked
-                var response = await client.GetAsync($"https://api.github.com/repos/{hermesGitHubRepo}/releases/latest");
-                response.EnsureSuccessStatusCode();
+            //try
+            //{
+            //    if (GitVersionInformation.CommitsSinceVersionSource != "0" || GitVersionInformation.UncommittedChanges != "0")
+            //        return; // we are probably in a test branch
 
-                string rawJson = await response.Content.ReadAsStringAsync();
-                var parsedJson = JsonSerializer.Deserialize<Dictionary<string, object>>(rawJson);
+            //    using var client = new HttpClient();
+            //    client.Timeout = TimeSpan.FromSeconds(5);
+            //    client.DefaultRequestHeaders.Add("User-Agent", "curl/7.0.0"); // otherwise we get blocked
+            //    var response = await client.GetAsync($"https://api.github.com/repos/{hermesGitHubRepo}/releases/latest");
+            //    response.EnsureSuccessStatusCode();
 
-                string commitDateStr = parsedJson!["created_at"].ToString();
-                DateTime commitDate = DateTime.Parse(commitDateStr!, CultureInfo.InvariantCulture).ToUniversalTime();;
+            //    string rawJson = await response.Content.ReadAsStringAsync();
+            //    var parsedJson = JsonSerializer.Deserialize<Dictionary<string, object>>(rawJson);
 
-                string myCommitDateStr = GitVersionInformation.CommitDate;
-                DateTime myCommitDate = DateTime.Parse(myCommitDateStr, CultureInfo.InvariantCulture).ToUniversalTime();;
+            //    string commitDateStr = parsedJson!["created_at"].ToString();
+            //    DateTime commitDate = DateTime.Parse(commitDateStr!, CultureInfo.InvariantCulture).ToUniversalTime();;
 
-                if (commitDate > myCommitDate)
-                {
-                    Console.WriteLine("------------------------");
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"HermesProxy update available v{GitVersionInformation.Major}.{GitVersionInformation.Minor} => {parsedJson!["tag_name"]} ({commitDate:yyyy-MM-dd})");
-                    Console.WriteLine("Please download new version from https://github.com/WowLegacyCore/HermesProxy/releases/latest");
-                    Console.ResetColor();
-                    Console.WriteLine("------------------------");
-                    Console.WriteLine();
-                    Thread.Sleep(10_000);
-                }
-            }
-            catch
-            {
-                // ignore
-            }
+            //    string myCommitDateStr = GitVersionInformation.CommitDate;
+            //    DateTime myCommitDate = DateTime.Parse(myCommitDateStr, CultureInfo.InvariantCulture).ToUniversalTime();;
+
+            //    if (commitDate > myCommitDate)
+            //    {
+            //        Console.WriteLine("------------------------");
+            //        Console.ForegroundColor = ConsoleColor.Yellow;
+            //        Console.WriteLine($"HermesProxy update available v{GitVersionInformation.Major}.{GitVersionInformation.Minor} => {parsedJson!["tag_name"]} ({commitDate:yyyy-MM-dd})");
+            //        Console.WriteLine("Please download new version from https://github.com/WowLegacyCore/HermesProxy/releases/latest");
+            //        Console.ResetColor();
+            //        Console.WriteLine("------------------------");
+            //        Console.WriteLine();
+            //        Thread.Sleep(10_000);
+            //    }
+            //}
+            //catch
+            //{
+            //    // ignore
+            //}
         }
 
         private static readonly string? _buildTag;
