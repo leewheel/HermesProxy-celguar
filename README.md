@@ -1,4 +1,4 @@
-# 来源
+# 来源 (这个项目已经过时了)
 项目
 
 https://github.com/WowLegacyCore/HermesProxy
