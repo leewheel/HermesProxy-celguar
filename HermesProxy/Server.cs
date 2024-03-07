@@ -34,7 +34,7 @@ namespace HermesProxy
             catch { /* ignore */ }
 #endif
 
-            Log.Print(LogType.Server, "Starting Hermes Proxy...");
+            Log.Print(LogType.Server, "启动燃烧的远征研究小组测试用代理器...");
             Log.Print(LogType.Server, $"Version {GetVersionInformation()}");
             Log.Start();
 
