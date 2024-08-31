@@ -19,9 +19,15 @@ namespace HermesProxy.World.Server
 
         private readonly string _accountName;
 
+
         private string GetAccountMetaDataDirectory()
         {
-            string path = Path.GetFullPath(Path.Combine("AccountData", _accountName));
+            string _dir = "AccountData";
+            if (Settings.AccountDataDir != "")
+            {
+                _dir = Settings.AccountDataDir + Path.DirectorySeparatorChar + _dir;
+            }
+            string path = Path.GetFullPath(Path.Combine(_dir, _accountName));
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -31,14 +37,20 @@ namespace HermesProxy.World.Server
 
         private string GetAccountCharacterMetaDataDirectory(string realm, string characterName)
         {
-            string path = Path.GetFullPath(Path.Combine("AccountData", _accountName, realm, characterName));
+            string _dir = "AccountData";
+            if (Settings.AccountDataDir != "")
+            {
+                _dir = Settings.AccountDataDir + Path.DirectorySeparatorChar + _dir;
+            }
+
+            string path = Path.GetFullPath(Path.Combine(_dir, _accountName, realm, characterName));
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
 
             return path;
         }
-        
+
         public AccountMetaDataManager(string accountName)
         {
             _accountName = accountName;
@@ -57,7 +69,7 @@ namespace HermesProxy.World.Server
                 Log.Print(LogType.Error, $"Invalid split size in 'GetLastSelectedCharacter' for account '{_accountName}'");
                 return null;
             }
-            
+
             return (content[0], content[1], ulong.Parse(content[3]), long.Parse(content[2]));
         }
 
@@ -102,7 +114,7 @@ namespace HermesProxy.World.Server
             var path = Path.Combine(dir, COMPLETED_QUESTS_FILE);
 
             var when = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            File.AppendAllLines(path, new[]{$"{questId},{when}"}, Encoding.UTF8);
+            File.AppendAllLines(path, new[] { $"{questId},{when}" }, Encoding.UTF8);
         }
 
         public void MarkQuestAsNotCompleted(string realmName, string charName, uint questId)
@@ -144,7 +156,7 @@ namespace HermesProxy.World.Server
             return loadedJson;
         }
     }
-    
+
     public class AccountData
     {
         public WowGuid128 Guid;
@@ -158,7 +170,7 @@ namespace HermesProxy.World.Server
         public AccountData[] Data;
         string _accountName;
         string _realmName;
-        
+
         public AccountDataManager(string accountName, string realmName)
         {
             _accountName = accountName;
@@ -181,7 +193,13 @@ namespace HermesProxy.World.Server
 
         public string GetAccountDataDirectory()
         {
-            string path = Path.GetFullPath(Path.Combine("AccountData", _accountName, _realmName));
+            string _dir = "AccountData";
+            if (Settings.AccountDataDir != "")
+            {
+                _dir = Settings.AccountDataDir + Path.DirectorySeparatorChar + _dir;
+            }
+
+            string path = Path.GetFullPath(Path.Combine(_dir, _accountName, _realmName));
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -241,7 +259,7 @@ namespace HermesProxy.World.Server
                     }
                 }
             }
-            
+
             return data;
         }
 

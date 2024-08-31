@@ -1,48 +1,30 @@
-# HermesProxy ![Build](https://github.com/WowLegacyCore/HermesProxy/actions/workflows/Build_Proxy.yml/badge.svg)
+# 来源 (这个项目已经过时了)
+项目
 
-This project enables play on existing legacy WoW emulation cores using the modern clients. It serves as a translation layer, converting all network traffic to the appropriate format each side can understand.
+https://github.com/WowLegacyCore/HermesProxy
 
-There are 4 major components to the application:
-- The modern BNetServer to which the client initially logs into.
-- The legacy AuthClient which will in turn login to the remote authentication server (realmd). 
-- The modern WorldServer to which the game client will connect once a realm has been selected. 
-- The legacy WorldClient which communicates with the remote world server (mangosd).
+CSV
 
-## Supported Versions
+https://github.com/zelazrgn/Everlook-HermesProxy-CSV  
 
-| Modern Versions | Legacy Versions |
-|-----------------|-----------------|
-| 1.14.0          | 1.12.1          |
-| 2.5.2           | 2.4.3           |
+# 免责声明
+请注意，此开源项目仅用于个人和非商业用途。被许可人不得将本项目用于私服或商业目的。任何人都可以下载、使用、修改以及分发本项目的代码，但在使用中需要自行承担责任。我们在法律范围内尽力保证软件的有效性和可用性，但是不能保证软件不会出现缺陷或错误。因此，被许可人必须自行承担软件使用的风险和责任，作者不对误用本项目所引起的任何问题或损失负有法律责任。如果被许可人不同意本声明的内容，请勿使用本项目。  
 
-## Ingame Settings
-Note: Keep `Optimize Network for Speed` **enabled** (it's under `System` -> `Network`), otherwise you will get kicked every now and then.
 
-## Usage Instructions
+# 说明
+这个版本是在HermesProxy不更新的时间里，我尝试去对HermesProxy进行一些修复。  
 
-- Edit the app's config to specify the exact versions of your game client and the remote server, along with the address.
-- Go into your game folder, in the Classic or Classic Era subdirectory, and edit WTF/Config.wtf to set the portal to 127.0.0.1.
-- Download [Arctium Launcher](https://github.com/Arctium/WoW-Launcher/releases/tag/latest) into the main game folder, and then run it  
-with `--staticseed --version=ClassicEra` for vanilla  
-or `--staticseed --version=Classic` for TBC.
-- Start the proxy app and login through the game with your usual credentials.
+本人并不是游戏相关从业者，只是一个爱好者，出于爱好和以及学习的目的。这是一个不成熟的测试产品，因此建议仅供专业人员内部交流使用。
 
-## Chat commands
-HermesProxy provides some internal chat commands:
+# 修复内容 
+1 野兽之眼BUG  
+2 重置界面的时候(\RL) ，猎人和术士宠物栏丢失  
+3 法师法力宝石/术士治疗石，拖入动作条无法正常显示数量 （需要安装!!heitu插件，在项目AddOns文件夹内）
 
-| Command                    | Description                                                                  |
-|----------------------------|------------------------------------------------------------------------------|
-| `!qcomplete <questId>`     | Manually marks a quest as already completed (useful for quest helper addons) |
-| `!quncomplete <questId>`   | Unmarks a quest as completed                                                 |
+# 我的主页
 
-## Start Arguments
- - `--config <filename>` to specify a config (default `HermesProxy.config`)
- - `--set <key>=<value>` to overwrite a specific config value (example `--set ServerAddress=logon.example.com`)
- - `--no-version-check`  to disable the check for newer versions
+[肥羊会飞正在创作黑兔经典魔兽助手 | 爱发电 (afdian.net)](https://afdian.net/a/wowheitu)
 
-## Acknowledgements
 
-Parts of this poject's code are based on [CypherCore](https://github.com/CypherCore/CypherCore) and [BotFarm](https://github.com/jackpoz/BotFarm). I would like to extend my sincere thanks to these projects, as the creation of this app might have never happened without them. And I would also like to expressly thank [Modox](https://github.com/mdx7) for all his work on reverse engineering the classic clients and all the help he has personally given me. 
-
-## Download HermesProxy
-Stable Downloads: [Releases](https://github.com/WowLegacyCore/HermesProxy/releases)
+## 下载
+[Releases](https://github.com/zyfei/HermesProxy-heitu/releases)

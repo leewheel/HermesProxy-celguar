@@ -1,0 +1,7 @@
+## Interface: 11402
+## Title: 黑兔内置插件
+## Author: 这只肥羊会飞
+## Notes: 这是黑兔优化客户端的一部分
+## LoadOnDemand: 0
+
+!!heitu.lua
