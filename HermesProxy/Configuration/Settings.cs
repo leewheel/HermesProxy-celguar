@@ -30,6 +30,8 @@ namespace Framework
         public static int ServerSpellDelay;
         public static int ClientSpellDelay;
 
+        public static string AccountDataDir;
+
         public static bool LoadAndVerifyFrom(ConfigurationParser config)
         {
             ClientSeed = config.GetByteArray("ClientSeed", "179D3DC3235629D07113A9B3867F97A7".ParseAsByteArray());
@@ -52,6 +54,9 @@ namespace Framework
             PacketsLog = config.GetBoolean("PacketsLog", true);
             ServerSpellDelay = config.GetInt("ServerSpellDelay", 0);
             ClientSpellDelay = config.GetInt("ClientSpellDelay", 0);
+
+            // zyf 自定义玩家数据位置
+            AccountDataDir = config.GetString("AccountDataDir", "");
 
             return VerifyConfig();
         }

@@ -309,12 +309,20 @@ namespace HermesProxy.World.Client
                     continue;
                 PrintString($"Guid = {objCount}", index, j);
                 GetSession().GameState.ObjectCacheMutex.WaitOne();
+
+                // zyf 优化一下，只保留当前玩家
+                if (guid != GetSession().GameState.CurrentPlayerGuid)
+                {
+                    GetSession().GameState.ObjectCacheLegacy.Remove(guid);
+                    GetSession().GameState.ObjectCacheModern.Remove(guid);
+                }
+
                 GetSession().GameState.ObjectCacheLegacy.Remove(guid);
                 GetSession().GameState.ObjectCacheModern.Remove(guid);
                 GetSession().GameState.ObjectCacheMutex.ReleaseMutex();
                 GetSession().GameState.LastAuraCasterOnTarget.Remove(guid);
 
-                // If the pet is too far away, sends a SMSG_UPDATE_OBJECT protocol
+                // zyf 如果是宠物过远，先发送一个SMSG_UPDATE_OBJECT协议
                 if (GetSession().GameState.CurrentPetGuid == guid)
                 {
                     UpdateObject updateObject2 = new UpdateObject(GetSession().GameState);

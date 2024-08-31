@@ -118,7 +118,7 @@ namespace HermesProxy.World.Server
         [PacketHandler(Opcode.CMSG_REQUEST_PET_INFO)]
         void HandleRequestPetInfo(PetInfoRequest r)
         {
-            // CMSG_REQUEST_PET_INFO
+            // zyf 修复CMSG_REQUEST_PET_INFO协议的传输问题
             WorldPacket packet = new WorldPacket(Opcode.CMSG_REQUEST_PET_INFO);
             SendPacketToServer(packet);
 
