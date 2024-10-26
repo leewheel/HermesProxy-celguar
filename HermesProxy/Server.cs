@@ -31,7 +31,7 @@ namespace HermesProxy
 #endif
 
             Log.Print(LogType.Server, "Starting Hermes Proxy...");
-            Log.Print(LogType.Server, $"Version {GetVersionInformation()}");
+            //Log.Print(LogType.Server, $"Version {GetVersionInformation()}");
             Log.Start();
 
             Log.Print(LogType.Server, "小黑兔魔兽助手修改版");
@@ -175,16 +175,16 @@ namespace HermesProxy
         }
 
         private static readonly string? _buildTag;
-        private static string GetVersionInformation()
-        {
-            var commitDate = DateTime.Parse(GitVersionInformation.CommitDate, CultureInfo.InvariantCulture).ToUniversalTime();
+        //private static string GetVersionInformation()
+        //{
+        //    var commitDate = DateTime.Parse(GitVersionInformation.CommitDate, CultureInfo.InvariantCulture).ToUniversalTime();
 
-            string version = $"{commitDate:yyyy-MM-dd} {_buildTag}{GitVersionInformation.MajorMinorPatch}";
-            if (GitVersionInformation.CommitsSinceVersionSource != "0")
-                version += $"+{GitVersionInformation.CommitsSinceVersionSource}({GitVersionInformation.ShortSha})";
-            if (GitVersionInformation.UncommittedChanges != "0")
-                version += " dirty";
-            return version;
-        }
+        //    string version = $"{commitDate:yyyy-MM-dd} {_buildTag}{GitVersionInformation.MajorMinorPatch}";
+        //    if (GitVersionInformation.CommitsSinceVersionSource != "0")
+        //        version += $"+{GitVersionInformation.CommitsSinceVersionSource}({GitVersionInformation.ShortSha})";
+        //    if (GitVersionInformation.UncommittedChanges != "0")
+        //        version += " dirty";
+        //    return version;
+        //}
     }
 }
