@@ -259,6 +259,7 @@ namespace HermesProxy.World.Server
                 return ReadDataHandlerResult.Error;
             }
 
+            Log.Print(LogType.Network, $"Modern Client: sent opcode {opcode.ToString()} ({packet.GetOpcode()}).");
             switch (opcode)
             {
                 case Opcode.CMSG_PING:
