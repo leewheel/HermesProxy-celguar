@@ -372,7 +372,7 @@ namespace HermesProxy.World.Client
         {
             Opcode universalOpcode = packet.GetUniversalOpcode(false);
             Log.PrintNet(LogType.Debug, LogNetDir.S2P, $"Received opcode {universalOpcode} ({packet.GetOpcode()}).");
-            Log.Print(LogType.Network, $"Received opcode {universalOpcode} ({packet.GetOpcode()}).");
+            Log.Print(LogType.Network, $"Legacy Server: received opcode {universalOpcode} ({packet.GetOpcode()}).");
 
             switch (universalOpcode)
             {
