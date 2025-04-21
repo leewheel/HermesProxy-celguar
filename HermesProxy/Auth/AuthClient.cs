@@ -565,8 +565,7 @@ namespace HermesProxy.Auth
             Log.Print(LogType.Network, $"Received {realmsCount} realms.");
             List<RealmInfo> realmList = new List<RealmInfo>();
 
-            // For some reason AzerothCore realmId starts with 1
-            for (ushort i = 1; i < realmsCount + 1; i++)
+            for (ushort i = 0; i < realmsCount; i++)
             {
                 RealmInfo realmInfo = new RealmInfo();
                 realmInfo.ID = i;
