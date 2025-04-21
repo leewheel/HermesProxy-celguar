@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Collections.Concurrent;
 
+using Framework;
 using Framework.Constants;
 using Framework.Cryptography;
 using Framework.IO;
@@ -28,6 +29,7 @@ using Framework.Networking;
 using Framework.Logging;
 using Framework.Realm;
 
+using HermesProxy.Enums;
 using HermesProxy.World.Enums;
 using HermesProxy.World.Server.Packets;
 using static HermesProxy.World.Server.Packets.AuthResponse;
@@ -552,7 +554,11 @@ namespace HermesProxy.World.Server
                 return;
             }
 
-            SendPacket(new EnterEncryptedMode(_encryptKey, true));
+            // Perhaps could be done better
+            if (Settings.ClientBuild >= ClientVersionBuild.V3_4_3_54261)
+                SendPacket(new EnterEncryptedModeWotlk(_encryptKey, true));
+            else
+                SendPacket(new EnterEncryptedMode(_encryptKey, true));
             AsyncRead();
         }
 
