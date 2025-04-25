@@ -1,7 +1,5 @@
 ## Work in progress
 This project is in very early stage of development. Currently it allows only to log in and see character list (which is broken).
-If you would like to see the progress or participate in the development process, you can visit:
-- [Discord Channel](https://discord.gg/gReCUzPG)
 
 
 ## Description
