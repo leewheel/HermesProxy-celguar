@@ -554,11 +554,7 @@ namespace HermesProxy.World.Server
                 return;
             }
 
-            // Perhaps could be done better
-            if (Settings.ClientBuild >= ClientVersionBuild.V3_4_3_54261)
-                SendPacket(new EnterEncryptedModeWotlk(_encryptKey, true));
-            else
-                SendPacket(new EnterEncryptedMode(_encryptKey, true));
+            SendPacket(new EnterEncryptedModeWotlk(_encryptKey, true));
             AsyncRead();
         }
 
