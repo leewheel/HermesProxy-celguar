@@ -1,4 +1,4 @@
-## Work in progress
+# Work in progress (Unusable in the current state)
 This project is in very early stage of development. Currently it allows only to log in and see character list (which is broken).
 
 
