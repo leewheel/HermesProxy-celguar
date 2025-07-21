@@ -24,6 +24,26 @@ using Framework.Constants;
 
 namespace HermesProxy.World.Server.Packets
 {
+    public class CustomTabardInfo
+    {
+        public CustomTabardInfo(WorldPacket data)
+        {
+            EmblemStyle = data.ReadInt32();
+            EmblemColor = data.ReadInt32();
+            BorderStyle = data.ReadInt32();
+            BorderColor = data.ReadInt32();
+            BackgroundColor = data.ReadInt32();
+        }
+
+        public CustomTabardInfo() { }
+
+        public int EmblemStyle = -1;
+        public int EmblemColor = -1;
+        public int BorderStyle = -1;
+        public int BorderColor = -1;
+        public int BackgroundColor = -1;
+    }
+
     public class EnumCharacters : ClientPacket
     {
         public EnumCharacters(WorldPacket packet) : base(packet) { }
@@ -35,6 +55,18 @@ namespace HermesProxy.World.Server.Packets
     {
         public EnumCharactersResult() : base(Opcode.SMSG_ENUM_CHARACTERS_RESULT) { }
 
+        public struct RaceLimitDisableInfo
+        {
+            public int RaceID;
+            public int BlockReason;
+
+            public void Write(WorldPacket data)
+            {
+                data.WriteInt32(RaceID);
+                data.WriteInt32(BlockReason);
+            }
+        }
+        
         public override void Write()
         {
             _worldPacket.WriteBit(Success);
@@ -42,19 +74,23 @@ namespace HermesProxy.World.Server.Packets
             _worldPacket.WriteBit(IsNewPlayerRestrictionSkipped);
             _worldPacket.WriteBit(IsNewPlayerRestricted);
             _worldPacket.WriteBit(IsNewPlayer);
+            _worldPacket.WriteBit(IsTrialAccountRestricted);
             _worldPacket.WriteBit(DisabledClassesMask.HasValue);
-            _worldPacket.WriteBit(IsAlliedRacesCreationAllowed);
             _worldPacket.WriteInt32(Characters.Count);
             _worldPacket.WriteInt32(MaxCharacterLevel);
             _worldPacket.WriteInt32(RaceUnlockData.Count);
             _worldPacket.WriteInt32(UnlockedConditionalAppearances.Count);
-
+            _worldPacket.WriteInt32(RaceLimitDisables.Count);
+            
             if (DisabledClassesMask.HasValue)
                 _worldPacket.WriteUInt32(DisabledClassesMask.Value);
 
             foreach (UnlockedConditionalAppearance unlockedConditionalAppearance in UnlockedConditionalAppearances)
                 unlockedConditionalAppearance.Write(_worldPacket);
 
+            foreach (RaceLimitDisableInfo raceLimitDisableInfo in RaceLimitDisables)
+                raceLimitDisableInfo.Write(_worldPacket);
+            
             foreach (CharacterInfo charInfo in Characters)
                 charInfo.Write(_worldPacket);
 
@@ -67,7 +103,7 @@ namespace HermesProxy.World.Server.Packets
         public bool IsNewPlayerRestrictionSkipped; // allows client to skip new player restrictions
         public bool IsNewPlayerRestricted; // forbids using level boost and class trials
         public bool IsNewPlayer; // forbids hero classes and allied races
-        public bool IsAlliedRacesCreationAllowed;
+        public bool IsTrialAccountRestricted;
 
         public int MaxCharacterLevel = 1;
         public uint? DisabledClassesMask = new();
@@ -75,7 +111,7 @@ namespace HermesProxy.World.Server.Packets
         public List<CharacterInfo> Characters = new(); // all characters on the list
         public List<RaceUnlock> RaceUnlockData = new(); //
         public List<UnlockedConditionalAppearance> UnlockedConditionalAppearances = new();
-
+        public List<RaceLimitDisableInfo> RaceLimitDisables = new();
         public class CharacterInfo
         {
             public void Write(WorldPacket data)
@@ -89,8 +125,8 @@ namespace HermesProxy.World.Server.Packets
                 data.WriteInt32(Customizations.Count);
 
                 data.WriteUInt8(ExperienceLevel);
-                data.WriteUInt32(ZoneId);
-                data.WriteUInt32(MapId);
+                data.WriteInt32(ZoneId);
+                data.WriteInt32(MapId);
                 data.WriteVector3(PreloadPos);
                 data.WritePackedGuid128(GuildGuid);
                 data.WriteUInt32((uint)Flags);
@@ -106,10 +142,10 @@ namespace HermesProxy.World.Server.Packets
                 foreach (var visualItem in VisualItems)
                     visualItem.Write(data);
 
-                data.WriteUInt64(LastPlayedTime);
-                data.WriteUInt16(SpecID);
-                data.WriteUInt32(Unknown703);
-                data.WriteUInt32(LastLoginVersion);
+                data.WriteInt64((long)LastPlayedTime);
+                data.WriteInt16(SpecID);
+                data.WriteInt32(Unknown703);
+                data.WriteInt32(LastLoginVersion);
                 data.WriteUInt32(Flags4);
                 data.WriteInt32(MailSenders.Count);
                 data.WriteInt32(MailSenderTypes.Count);
@@ -128,8 +164,9 @@ namespace HermesProxy.World.Server.Packets
                 data.WriteBit(FirstLogin);
                 data.WriteBit(BoostInProgress);
                 data.WriteBits(unkWod61x, 5);
-                data.WriteBit(false);
-                data.WriteBit(ExpansionChosen);
+                data.WriteBits(0, 2);
+                data.WriteBit(RpeResetAvailable);
+                data.WriteBit(RpeResetQuestClearAvailable);
 
                 foreach (string str in MailSenders)
                     data.WriteBits(str.GetByteCount() + 1, 6);
@@ -152,31 +189,33 @@ namespace HermesProxy.World.Server.Packets
             public Gender SexId;
             public Array<ChrCustomizationChoice> Customizations;
             public byte ExperienceLevel;
-            public uint ZoneId;
-            public uint MapId;
+            public int ZoneId;
+            public int MapId;
             public Vector3 PreloadPos;
             public WowGuid128 GuildGuid;
             public CharacterFlags Flags; // Character flag @see enum CharacterFlags
-            public uint Flags2;
+            public uint Flags2; // CharacterCustomizeFlags
             public uint Flags3;
             public uint Flags4;
             public bool FirstLogin;
             public byte unkWod61x;
-            public bool ExpansionChosen;
+            // public bool ExpansionChosen;
             public ulong LastPlayedTime;
-            public ushort SpecID;
-            public uint Unknown703;
-            public uint LastLoginVersion;
+            public short SpecID;
+            public int Unknown703;
+            public int LastLoginVersion;
             public uint OverrideSelectScreenFileDataID;
             public uint PetCreatureDisplayId;
             public uint PetExperienceLevel;
             public uint PetCreatureFamilyId;
             public bool BoostInProgress; // @todo
             public uint[] ProfessionIds = new uint[2];      // @todo
-            public VisualItemInfo[] VisualItems = new VisualItemInfo[Enums.Classic.InventorySlots.BagEnd];
+            public VisualItemInfo[] VisualItems = new VisualItemInfo[34];
             public List<string> MailSenders = new();
             public List<uint> MailSenderTypes = new();
-
+            public bool RpeResetAvailable;
+            public bool RpeResetQuestClearAvailable;
+            public CustomTabardInfo PersonalTabard;
             public struct VisualItemInfo
             {
                 public void Write(WorldPacket data)
@@ -205,26 +244,29 @@ namespace HermesProxy.World.Server.Packets
 
         public struct RaceUnlock
         {
-            public RaceUnlock(int raceId, bool hasExpansion, bool hasAchievement, bool hasHeritageArmor)
+            public RaceUnlock(Race raceId, bool hasExpansion, bool hasAchievement, bool hasHeritageArmor, bool isLocked)
             {
                 RaceID = raceId;
                 HasExpansion = hasExpansion;
                 HasAchievement = hasAchievement;
                 HasHeritageArmor = hasHeritageArmor;
+                IsLocked=isLocked;
             }
             public void Write(WorldPacket data)
             {
-                data.WriteInt32(RaceID);
+                data.WriteInt32((int)RaceID);
                 data.WriteBit(HasExpansion);
                 data.WriteBit(HasAchievement);
                 data.WriteBit(HasHeritageArmor);
+                data.WriteBit(IsLocked);
                 data.FlushBits();
             }
 
-            public int RaceID;
+            public Race RaceID;
             public bool HasExpansion;
             public bool HasAchievement;
             public bool HasHeritageArmor;
+            public bool IsLocked;
         }
 
         public struct UnlockedConditionalAppearance
@@ -291,6 +333,14 @@ namespace HermesProxy.World.Server.Packets
 
         public uint Token = 0;
     }
+    
+    public class GetUndeleteCharacterCooldownStatus : ClientPacket
+    {
+        public GetUndeleteCharacterCooldownStatus(WorldPacket packet) : base(packet) { }
+
+        public override void Read() { }
+    }
+
 
     public class GetAccountCharacterListResult : ServerPacket
     {
@@ -343,6 +393,17 @@ namespace HermesProxy.World.Server.Packets
         public bool Success;
         public string Name = "";
     }
+    public class UndeleteCooldownStatusResponse() : ServerPacket(Opcode.SMSG_UNDELETE_COOLDOWN_STATUS_RESPONSE)
+    {
+        public override void Write()
+        {
+            // This opcode is not supported on 3.3.5a
+            _worldPacket.WriteBit(false);
+            _worldPacket.WriteInt32(0);
+            _worldPacket.WriteInt32(0);
+        }
+    }
+
 
     public class ChrCustomizationChoice : IComparable<ChrCustomizationChoice>
     {
@@ -481,12 +542,10 @@ namespace HermesProxy.World.Server.Packets
         {
             Guid = _worldPacket.ReadPackedGuid128();
             FarClip = _worldPacket.ReadFloat();
-            UnkBit = _worldPacket.HasBit();
         }
 
         public WowGuid128 Guid;      // Guid of the player that is logging in
         public float FarClip;        // Visibility distance (for terrain)
-        public bool UnkBit;
     }
 
     public class LoginVerifyWorld : ServerPacket

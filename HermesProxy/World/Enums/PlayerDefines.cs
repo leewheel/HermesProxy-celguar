@@ -12,6 +12,7 @@ namespace HermesProxy.World.Enums
         public const int MaxTalentColumns = 3;
         public const int MaxTalentRank = 5;
         public const int MaxPvpTalentSlots = 4;
+        public const int MaxGlyphSlotIndex = 6;
         public const int MinSpecializationLevel = 10;
         public const int MaxSpecializations = 5;
         public const int InitialSpecializationIndex = 4;

@@ -26,8 +26,97 @@ public static class Time
     public const int Month = Day * 30;
     public const int Year = Month * 12;
     public const int InMilliseconds = 1000;
+    
+    public static readonly int MillisecondsInSecond = 1000;
+    public static readonly int SecondsInMinute = 60;
+    public static readonly int MinutesInHour = 60;
+    public static readonly int HoursInDay = 24;
+    public static readonly int DaysInWeek = 7;
+    
+    public static readonly int SecondMS = InMilliseconds;
+    public static readonly int MinuteMS = (SecondMS * SecondsInMinute);
+    public static readonly int HourMS = (MinuteMS * MinutesInHour);
+    public static readonly int DayMS = (HourMS * HoursInDay);
+    public static readonly int WeekMS = (DayMS * DaysInWeek);
 
     public static readonly DateTime ApplicationStartTime = DateTime.Now;
+    public static readonly DateTime Zero = DateTime.MinValue;
+    public static readonly DateTime Infinity = DateTime.MaxValue;
+    
+     /// <summary>
+    /// Gets the current UTC time.
+    /// </summary>
+    public static DateTime Now => DateTime.UtcNow;
+
+    /// <summary>
+    /// Gets the application UpTime.
+    /// </summary>
+    public static TimeSpan UpTime => Now - ApplicationStartTime;
+
+    /// <summary>
+    /// Gets the application time relative to application start time in ms.
+    /// </summary>
+    public static RelativeTime NowRelative => (RelativeTime)UpTime.ToMilliseconds();
+
+    /// <summary>
+    /// Gets the difference to current UTC time.
+    /// </summary>
+    public static TimeSpan Diff(DateTime oldTime)
+    {
+        return Diff(oldTime, Now);
+    }    
+
+    /// <summary>
+    /// Gets the difference to current UpTime.
+    /// </summary>
+    public static TimeSpan Diff(TimeSpan oldUpTime)
+    {
+        return UpTime - oldUpTime;
+    }
+
+    /// <summary>
+    /// Gets the difference to current RelativeTime in milliseconds.
+    /// </summary>
+    public static Milliseconds Diff(RelativeTime oldMSTime)
+    {
+        return Diff(oldMSTime, NowRelative);
+    }
+
+    /// <summary>
+    /// Gets the difference between two time points.
+    /// </summary>
+    public static TimeSpan Diff(DateTime oldTime, DateTime newTime)
+    {
+        return newTime - oldTime;
+    }
+
+    /// <summary>
+    /// Gets the difference between two time spans.
+    /// </summary>
+    public static TimeSpan Diff(TimeSpan oldTimeSpan, TimeSpan newTimeSpan)
+    {
+        return newTimeSpan - oldTimeSpan;
+    }
+
+    /// <summary>
+    /// Gets the difference between two relative to UpTime spans in milliseconds.
+    /// </summary>
+    public static Milliseconds Diff(RelativeTime oldMSTime, RelativeTime newMSTime)
+    {
+        if (oldMSTime > newMSTime)
+            return (Milliseconds)((RelativeTime)0xFFFFFFFF - oldMSTime + newMSTime);
+        else
+            return (Milliseconds)(newMSTime - oldMSTime);
+    }
+
+    /// <summary>
+    /// Gets the difference between relative time span and DateTime in milliseconds.
+    /// </summary>
+    public static Milliseconds Diff(RelativeTime oldMSTime, DateTime newTime)
+    {
+        RelativeTime newMSTime = (RelativeTime)(newTime - ApplicationStartTime).ToMilliseconds();
+        return Diff(oldMSTime,newMSTime);
+    }
 
     /// <summary>
     /// Gets the current Unix time.
@@ -229,6 +318,161 @@ public static class Time
         Console.Write(description);
         Console.WriteLine(" Time Elapsed {0} ms", watch.Elapsed.TotalMilliseconds);
     }
+    
+    public static TimeSpan Min(TimeSpan left, TimeSpan right)
+    {
+        if (left < right)
+            return left;
+        else
+            return right;
+    }
+
+    public static TimeSpan Max(TimeSpan left, TimeSpan right)
+    {
+        if (left > right)
+            return left;
+        else
+            return right;
+    }
+
+    public static DateTime Min(DateTime left, DateTime right)
+    {
+        if (left < right)
+            return left;
+        else
+            return right;
+    }
+
+    public static DateTime Max(DateTime left, DateTime right)
+    {
+        if (left > right)
+            return left;
+        else
+            return right;
+    }
+
+    public static Milliseconds Min(Milliseconds left, Milliseconds right)
+    {
+        if (left.Ticks < right.Ticks)
+            return left;
+        else
+            return right;
+    }
+
+    public static Milliseconds Max(Milliseconds left, Milliseconds right)
+    {
+        if (left.Ticks > right.Ticks)
+            return left;
+        else
+            return right;
+    }
+
+    public static Seconds Min(Seconds left, Seconds right)
+    {
+        if (left.Ticks < right.Ticks)
+            return left;
+        else
+            return right;
+    }
+
+    public static Seconds Max(Seconds left, Seconds right)
+    {
+        if (left.Ticks > right.Ticks)
+            return left;
+        else
+            return right;
+    }
+    
+         
+     // It is better to use these methods instead of native ones, which use the double as an argument.
+     // This helps get rid of the inaccuracies that the double type suffers from.
+     public static TimeSpan SpanFromMilliseconds(long Milliseconds)
+     {
+         return TimeSpan.FromTicks(Milliseconds * TimeSpan.TicksPerMillisecond);
+     }
+
+     public static TimeSpan SpanFromSeconds(long Seconds)
+     {
+         return TimeSpan.FromTicks(Seconds * TimeSpan.TicksPerSecond);
+     }
+
+     public static TimeSpan SpanFromMinutes(long Minutes)
+     {
+         return TimeSpan.FromTicks(Minutes * (long)Time.Minute * TimeSpan.TicksPerSecond);
+     }
+
+     public static TimeSpan SpanFromHours(long Hours)
+     {
+         return TimeSpan.FromTicks(Hours * (long)Time.Hour * TimeSpan.TicksPerSecond);
+     }
+
+     public static TimeSpan SpanFromDays(long Days)
+     {
+         return TimeSpan.FromTicks(Days * (long)Time.Day * TimeSpan.TicksPerSecond);
+     }
+
+     public static TimeSpan SpanFromWeeks(long Weeks)
+     {
+         return TimeSpan.FromTicks(Weeks * (long)Time.Week * TimeSpan.TicksPerSecond);
+     }
+
+     // Just for good manners
+     public static TimeSpan SpanFromMilliseconds(double Milliseconds)
+     {
+         return TimeSpan.FromMilliseconds(Milliseconds);
+     }
+
+     public static TimeSpan SpanFromSeconds(double Seconds)
+     {
+         return TimeSpan.FromSeconds(Seconds);
+     }
+
+     public static TimeSpan SpanFromMinutes(double Minutes)
+     {
+         return TimeSpan.FromMinutes(Minutes);
+     }
+
+     public static TimeSpan SpanFromHours(double Hours)
+     {
+         return TimeSpan.FromHours(Hours);
+     }
+
+     public static TimeSpan SpanFromDays(double Days)
+     {
+         return TimeSpan.FromDays(Days);
+     }
+
+     public static TimeSpan SpanFromWeeks(double Weeks)
+     {
+         return TimeSpan.FromDays(Weeks * Time.Week);
+     }
+     
+     public static long ToSeconds(this TimeSpan span)
+     {
+         return span.Ticks / TimeSpan.TicksPerSecond;
+     }
+
+     public static long ToMinutes(this TimeSpan span)
+     {
+         return span.Ticks / TimeSpan.TicksPerMinute;
+     }
+
+     public static long ToHours(this TimeSpan span)
+     {
+         return span.Ticks / (Hour * TimeSpan.TicksPerSecond);
+     }
+
+     public static long ToDays(this TimeSpan span)
+     {
+         return span.Ticks / (Day * TimeSpan.TicksPerSecond);
+     }
+
+     public static long ToWeeks(this TimeSpan span)
+     {
+         return span.Ticks / (Week * TimeSpan.TicksPerSecond);
+     }
+     
+     
 }
 
 public class TimeTrackerSmall

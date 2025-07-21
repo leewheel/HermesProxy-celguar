@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HermesProxy.World.Enums.V3_4_3_54261
 {
     // ReSharper disable InconsistentNaming
-    // 2.5.3.41750
+    // 3.4.3.54261
     public enum ObjectField
     {
         OBJECT_FIELD_GUID = 0x000, // Size: 4, Flags: PUBLIC

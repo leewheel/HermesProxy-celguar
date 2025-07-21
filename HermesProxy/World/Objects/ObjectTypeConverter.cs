@@ -108,5 +108,37 @@ namespace HermesProxy.World.Objects
             }
             throw new ArgumentOutOfRangeException("0x" + type.ToString("X"));
         }
+        
+        private static readonly Dictionary<ObjectTypeWotlk, ObjectType> ConvDictWotlk = new Dictionary<ObjectTypeWotlk, ObjectType>
+        {
+            { ObjectTypeWotlk.Object,                 ObjectType.Object },
+            { ObjectTypeWotlk.Item,                   ObjectType.Item },
+            { ObjectTypeWotlk.Container,              ObjectType.Container },
+            { ObjectTypeWotlk.Unit,                   ObjectType.Unit },
+            { ObjectTypeWotlk.Player,                 ObjectType.Player },
+            { ObjectTypeWotlk.ActivePlayer,           ObjectType.ActivePlayer },
+            { ObjectTypeWotlk.GameObject,             ObjectType.GameObject },
+            { ObjectTypeWotlk.DynamicObject,          ObjectType.DynamicObject },
+            { ObjectTypeWotlk.Corpse,                 ObjectType.Corpse },
+            { ObjectTypeWotlk.AreaTrigger,            ObjectType.AreaTrigger },
+            { ObjectTypeWotlk.SceneObject,            ObjectType.SceneObject },
+            { ObjectTypeWotlk.Conversation,           ObjectType.Conversation }
+        };
+        
+        public static ObjectType Convert(ObjectTypeWotlk type)
+        {
+            if (!ConvDictWotlk.ContainsKey(type))
+                throw new ArgumentOutOfRangeException("0x" + type.ToString("X"));
+            return ConvDictWotlk[type];
+        }
+        public static ObjectTypeWotlk ConvertToWotlk(ObjectType type)
+        {
+            foreach (var itr in ConvDictWotlk)
+            {
+                if (itr.Value == type)
+                    return itr.Key;
+            }
+            throw new ArgumentOutOfRangeException("0x" + type.ToString("X"));
+        }
     }
 }
