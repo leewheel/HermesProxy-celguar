@@ -61,6 +61,7 @@ namespace HermesProxy.World.Server
         byte[] _serverChallenge;
         WorldCrypt _worldCrypt;
         byte[] _sessionKey;
+        private byte[] _sessionKey2;
         byte[] _encryptKey;
         ConnectToKey _instanceConnectKey;
         RealmId _realmId;
@@ -253,7 +254,7 @@ namespace HermesProxy.World.Server
 
             Opcode opcode = packet.GetUniversalOpcode(true);
 
-            Log.PrintNet(LogType.Debug, LogNetDir.C2P, $"Received opcode {opcode.ToString()} ({packet.GetOpcode()}).");
+            Log.PrintNet(LogType.Network, LogNetDir.C2P, $"Received opcode {opcode.ToString()} ({packet.GetOpcode()}).");
 
             if (opcode != Opcode.CMSG_HOTFIX_REQUEST && !header.IsValidSize())
             {
@@ -261,7 +262,6 @@ namespace HermesProxy.World.Server
                 return ReadDataHandlerResult.Error;
             }
 
-            Log.Print(LogType.Network, $"Modern Client: sent opcode {opcode.ToString()} ({packet.GetOpcode()}).");
             switch (opcode)
             {
                 case Opcode.CMSG_PING:
@@ -624,7 +624,7 @@ namespace HermesProxy.World.Server
             // only first 16 bytes of the hmac are used
             Buffer.BlockCopy(encryptKeyGen.Digest, 0, _encryptKey, 0, 16);
 
-            SendPacket(new EnterEncryptedMode(_encryptKey, true));
+            SendPacket(new EnterEncryptedModeWotlk(_encryptKey, true));
             AsyncRead();
         }
 
@@ -717,6 +717,7 @@ namespace HermesProxy.World.Server
                 SendBnetConnectionState(1);
                 GetSession().AccountDataMgr = new AccountDataManager(GetSession().Username, GetSession().RealmManager.GetRealm(_realmId).Name);
                 GetSession().RealmSocket = this;
+                GetSession().GameState.IsConnectedToRealm = true;
             }
             else
             {

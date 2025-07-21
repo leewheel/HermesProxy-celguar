@@ -59,6 +59,14 @@ namespace HermesProxy.World.Server
             SendPacket(result);
         }
 
+        [PacketHandler(Opcode.CMSG_GET_UNDELETE_CHARACTER_COOLDOWN_STATUS)]
+        void HandleGetUndeleteCharCooldownStatus(GetUndeleteCharacterCooldownStatus packet)
+        {
+            UndeleteCooldownStatusResponse response = new();
+   
+            SendPacket(response);
+        }
+
         [PacketHandler(Opcode.CMSG_CREATE_CHARACTER)]
         void HandleCreateCharacter(CreateCharacter charCreate)
         {
