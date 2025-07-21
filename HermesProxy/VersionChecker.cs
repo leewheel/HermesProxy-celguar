@@ -839,6 +839,8 @@ namespace HermesProxy
             {
                 if (AddedInVersion(2, 5, 3))
                     return 13;
+
+                return 15;
             }
             else if (!IsClassicVersionBuild())
             {

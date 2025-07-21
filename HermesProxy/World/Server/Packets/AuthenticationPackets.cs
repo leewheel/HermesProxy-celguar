@@ -130,14 +130,15 @@ namespace HermesProxy.World.Server.Packets
 
                 foreach (var raceClassAvailability in SuccessInfo.AvailableClasses)
                 {
-                    _worldPacket.WriteUInt8(raceClassAvailability.RaceID);
+                    _worldPacket.WriteUInt8((byte) raceClassAvailability.RaceID);
                     _worldPacket.WriteInt32(raceClassAvailability.Classes.Count);
 
                     foreach (var classAvailability in raceClassAvailability.Classes)
                     {
-                        _worldPacket.WriteUInt8(classAvailability.ClassID);
+                        _worldPacket.WriteUInt8((byte)classAvailability.ClassID);
                         _worldPacket.WriteUInt8(classAvailability.ActiveExpansionLevel);
                         _worldPacket.WriteUInt8(classAvailability.AccountExpansionLevel);
+                        _worldPacket.WriteUInt8(classAvailability.MinActiveExpansionLevel);
                     }
                 }
 
@@ -210,21 +211,23 @@ namespace HermesProxy.World.Server.Packets
 
         public class ClassAvailability
         {
-            public byte ClassID;
+            public Class ClassID;
             public byte ActiveExpansionLevel;
             public byte AccountExpansionLevel;
+            public byte MinActiveExpansionLevel;
 
-            public ClassAvailability(byte classId, byte activeExpLevel, byte accountExpLevel)
+            public ClassAvailability(Class classId, byte activeExpLevel, byte accountExpLevel, byte minActiveExpansionLevel)
             {
                 ClassID = classId;
                 ActiveExpansionLevel = activeExpLevel;
                 AccountExpansionLevel = accountExpLevel;
+                MinActiveExpansionLevel = minActiveExpansionLevel;
             }
         }
 
         public class RaceClassAvailability
         {
-            public byte RaceID;
+            public Race RaceID;
             public List<ClassAvailability> Classes = new();
         }
 
