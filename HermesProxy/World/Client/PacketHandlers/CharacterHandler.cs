@@ -159,7 +159,7 @@ namespace HermesProxy.World.Client
                 var fail = packet.ReadBool();
                 if (fail)
                 {
-                    response.Result = (byte)Enums.V3_4_3_54261.ResponseCodes.Failure;
+                    response.Result = (byte)Enums.V3_4_3_54261.ResponseCodes.RESPONSE_FAILURE;
                     SendPacketToClient(response);
                     return;
                 }
@@ -572,7 +572,7 @@ namespace HermesProxy.World.Client
 
             CharacterRenameResult rename = new();
             rename.Result = ModernVersion.ConvertResponseCodesValue(result);
-            if (rename.Result == (byte)Enums.V3_4_3_54261.ResponseCodes.Success)
+            if (rename.Result == (byte)Enums.V3_4_3_54261.ResponseCodes.RESPONSE_SUCCESS)
             {
                 rename.Guid = packet.ReadGuid().To128(GetSession().GameState);
                 rename.Name = packet.ReadCString();
