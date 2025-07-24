@@ -329,11 +329,8 @@ namespace HermesProxy
         {
             switch (Opcodes.GetOpcodesDefiningBuild(Build))
             {
-                case ClientVersionBuild.V1_12_1_5875:
-                    return typeof(World.Enums.V1_12_1_5875.ResponseCodes);
-                case ClientVersionBuild.V2_4_3_8606:
                 case ClientVersionBuild.V3_3_5_12340:
-                    return typeof(World.Enums.V2_4_3_8606.ResponseCodes);
+                    return typeof(World.Enums.V3_3_5_12340.ResponseCodes);
             }
             return null;
         }
@@ -707,13 +704,8 @@ namespace HermesProxy
         {
             switch (Opcodes.GetOpcodesDefiningBuild(Build))
             {
-                case ClientVersionBuild.V2_5_2_39570:
-                    return typeof(World.Enums.V2_5_2_39570.ResponseCodes);
-                case ClientVersionBuild.V2_5_3_41750:
-                case ClientVersionBuild.V1_14_1_40688:
-                    return typeof(World.Enums.V1_14_1_40688.ResponseCodes);
                 case ClientVersionBuild.V3_4_3_54261:
-                    return null; // TODO: replace with actual values
+                    return typeof(World.Enums.V3_4_3_54261.ResponseCodes);
             }
             return null;
         }
