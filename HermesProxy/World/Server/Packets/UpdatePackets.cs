@@ -302,30 +302,6 @@ namespace HermesProxy.World.Server.Packets
                 update.InitializePlaceholders();
                 switch (ModernVersion.GetUpdateFieldsDefiningBuild())
                 {
-                    case ClientVersionBuild.V1_14_0_40237:
-                    {
-                        Objects.Version.V1_14_0_40237.ObjectUpdateBuilder builder = new Objects.Version.V1_14_0_40237.ObjectUpdateBuilder(update, _gameState);
-                        builder.WriteToPacket(data);
-                        break;
-                    }
-                    case ClientVersionBuild.V1_14_1_40688:
-                    {
-                        Objects.Version.V1_14_1_40688.ObjectUpdateBuilder builder = new Objects.Version.V1_14_1_40688.ObjectUpdateBuilder(update, _gameState);
-                        builder.WriteToPacket(data);
-                        break;
-                    }
-                    case ClientVersionBuild.V2_5_2_39570:
-                    {
-                        Objects.Version.V2_5_2_39570.ObjectUpdateBuilder builder = new Objects.Version.V2_5_2_39570.ObjectUpdateBuilder(update, _gameState);
-                        builder.WriteToPacket(data);
-                        break;
-                    }
-                    case ClientVersionBuild.V2_5_3_41750:
-                    {
-                        Objects.Version.V2_5_3_41750.ObjectUpdateBuilder builder = new Objects.Version.V2_5_3_41750.ObjectUpdateBuilder(update, _gameState);
-                        builder.WriteToPacket(data);
-                        break;
-                    }
                     case ClientVersionBuild.V3_4_3_54261:
                     {
                         Objects.Version.V3_4_3_54261.ObjectUpdateBuilder builder = new Objects.Version.V3_4_3_54261.ObjectUpdateBuilder(update, _gameState);

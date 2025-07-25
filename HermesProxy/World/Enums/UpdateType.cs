@@ -18,14 +18,25 @@ namespace HermesProxy.World.Enums
 
     public enum UpdateTypeModern
     {
-        Values         = 0,
-        CreateObject1  = 1,
-        CreateObject2  = 2,
+        Values            = 0,
+        CreateObject1     = 1,
+        CreateObject2     = 2,
+        OutOfRangeObjects = 3,
     }
 
     public enum ObjectCreateType
     {
         Create1 = 0,
         Create2 = 1
+    }
+
+    [Flags]
+    public enum UpdateFieldFlag
+    {
+        None = 0,
+        Owner = 0x01,
+        PartyMember = 0x02,
+        UnitAll = 0x04,
+        Empath = 0x08
     }
 }
