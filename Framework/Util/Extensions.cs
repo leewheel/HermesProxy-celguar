@@ -415,6 +415,17 @@ namespace System
                 return true;
             return false;
         }
+        
+        public static uint HashFnv1a(this string data)
+        {
+            uint hash = 0x811C9DC5u;
+            foreach (char c in data)
+            {
+                hash ^= c;
+                hash *= 0x1000193u;
+            }
+            return hash;
+        }
         #endregion
 
         #region BinaryReader

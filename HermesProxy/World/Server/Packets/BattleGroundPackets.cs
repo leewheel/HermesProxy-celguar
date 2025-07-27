@@ -529,4 +529,74 @@ namespace HermesProxy.World.Server.Packets
 
         public bool FreeRepop;
     }
+    
+    struct BracketInfo
+    {
+        public int PersonalRating;
+        public int Ranking;
+        public int SeasonPlayed;
+        public int SeasonWon;
+        public int Unused1;
+        public int Unused2;
+        public int WeeklyPlayed;
+        public int WeeklyWon;
+        public int RoundsSeasonPlayed;
+        public int RoundsSeasonWon;
+        public int RoundsWeeklyPlayed;
+        public int RoundsWeeklyWon;
+        public int BestWeeklyRating;
+        public int LastWeeksBestRating;
+        public int BestSeasonRating;
+        public int PvpTierID;        
+        public int Unused3;
+        public int Unused4;
+        public int Rank;
+        public bool Disqualified;
+
+        public void Write(WorldPacket data)
+        {
+            data.WriteInt32(PersonalRating);
+            data.WriteInt32(Ranking);
+            data.WriteInt32(SeasonPlayed);
+            data.WriteInt32(SeasonWon);
+            data.WriteInt32(Unused1);
+            data.WriteInt32(Unused2);
+            data.WriteInt32(WeeklyPlayed);
+            data.WriteInt32(WeeklyWon);
+            data.WriteInt32(RoundsSeasonPlayed);
+            data.WriteInt32(RoundsSeasonWon);
+            data.WriteInt32(RoundsWeeklyPlayed);
+            data.WriteInt32(RoundsWeeklyWon);
+            data.WriteInt32(BestWeeklyRating);
+            data.WriteInt32(LastWeeksBestRating);
+            data.WriteInt32(BestSeasonRating);          
+            data.WriteInt32(PvpTierID);            
+            data.WriteInt32(Unused3);
+            data.WriteInt32(Unused4);
+            data.WriteInt32(Rank);
+            data.WriteBit(Disqualified);
+            data.FlushBits();
+        }
+    }
+
+    
+    class RequestRatedPvpInfo : ClientPacket
+    {
+        public RequestRatedPvpInfo(WorldPacket packet) : base(packet) { }
+
+        public override void Read() { }
+    }
+    
+    class RatedPvpInfo : ServerPacket
+    {
+        public RatedPvpInfo() : base(Opcode.SMSG_RATED_PVP_INFO) { }
+
+        public override void Write()
+        {
+            foreach (BracketInfo bracket in Bracket)
+                bracket.Write(_worldPacket);
+        }
+
+        BracketInfo[] Bracket = new BracketInfo[7];
+    }
 }

@@ -75,5 +75,12 @@ namespace HermesProxy.World.Server
                 packet.WriteUInt32((uint)GetSession().GameState.CurrentMapId);
             SendPacketToServer(packet);
         }
+        
+        [PacketHandler(Opcode.CMSG_REQUEST_RATED_PVP_INFO)]
+        void HandleBattlefieldLeave(RequestRatedPvpInfo packet)
+        {
+            RatedPvpInfo ratedPvpInfo = new();
+            SendPacket(ratedPvpInfo);
+        }
     }
 }

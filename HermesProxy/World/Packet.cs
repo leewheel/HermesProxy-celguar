@@ -265,6 +265,11 @@ namespace HermesProxy.World
             WriteBytes(lowPacked, loSize);
             WriteBytes(highPacked, hiSize);
         }
+        
+        public void WritePackedGuid(WowGuid128 guid)
+        {
+            WritePackedGuid128(guid);
+        }
 
         public void WritePackedUInt64(ulong guid)
         {

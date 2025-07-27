@@ -3,6 +3,7 @@ using HermesProxy.Enums;
 using HermesProxy.World.Enums;
 using HermesProxy.World.Server.Packets;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace HermesProxy.World.Client
@@ -1160,6 +1161,98 @@ namespace HermesProxy.World.Client
                 GetSession().GameState.SetFlatSpellMod(modIndex, classIndex, modValue);
             else
                 GetSession().GameState.SetPctSpellMod(modIndex, classIndex, modValue);
+        }
+        
+        [PacketHandler(Opcode.SMSG_AURA_UPDATE)]
+        void HandleAuraUpdate(WorldPacket packet)
+        {
+            var guid = packet.ReadPackedGuid().To128(GetSession().GameState);
+
+            var update = new AuraUpdate(guid, false);
+            var updateEmpty = new AuraUpdate(guid, false);
+            var slot = packet.ReadUInt8();
+            var spellId = packet.ReadUInt32();
+            var flags = (AuraFlagsWotLK)packet.ReadUInt8();
+            var level = packet.ReadUInt8(); // caster level
+            var stackAmount = packet.ReadUInt8();
+
+            int? duration = null;
+            int? maxDuration = null;
+           
+            if (!flags.HasFlag(AuraFlagsWotLK.NoCaster))
+            {
+                // caster exists
+                var casterUuid = packet.ReadPackedGuid().To128(GetSession().GameState);
+            }
+            
+            if (flags.HasFlag(AuraFlagsWotLK.Duration))
+            {
+                duration = packet.ReadInt32(); // stack ammount
+                maxDuration = packet.ReadInt32();
+            }
+            
+            var modernFlags = new AuraFlagsModern();
+            
+            AuraDataInfo data = new AuraDataInfo();
+            data.CastID = WowGuid128.Create(HighGuidType703.Cast, World.Enums.SpellCastSource.Aura, (uint)GetSession().GameState.CurrentMapId, (uint)spellId, guid.GetCounter());
+            data.SpellID = spellId;
+            data.SpellXSpellVisualID = GameData.GetSpellVisual(spellId);
+            data.Applications = 1;
+            data.Duration = duration;
+            data.Remaining = duration;
+            data.CastLevel = level;
+            data.Points = new List<float>();
+            data.EstimatedPoints = new List<float>();
+            ModernVersion.ConvertAuraFlags((ushort) flags, slot, out modernFlags, out data.ActiveFlags);
+
+            update.Auras.Add(new AuraInfo
+            {
+                Slot = slot,
+                AuraData = data
+            });
+            
+
+            SendPacketToClient(updateEmpty);
+        }
+        
+        [PacketHandler(Opcode.SMSG_AURA_UPDATE_ALL)]
+        void HandleAuraUpdateAllLegacy(WorldPacket packet)
+        {
+            var unitGuid = packet.ReadPackedGuid().To128(GetSession().GameState);
+            byte auraCount = packet.ReadUInt8();
+
+            var update = new AuraUpdate(unitGuid, true);
+            var updateEmpty = new AuraUpdate(unitGuid, true);
+
+
+            for (byte i = 0; i < auraCount; i++)
+            {
+                var spellId = packet.ReadUInt32();
+                var flags = (AuraFlagsWotLK)packet.ReadUInt8();
+                var applications = packet.ReadUInt8();
+                var duration = packet.ReadInt32();
+                var remaining = packet.ReadInt32();
+                var modernFlags = new AuraFlagsModern();
+                
+                AuraDataInfo data = new AuraDataInfo();
+                data.CastID = WowGuid128.Create(HighGuidType703.Cast, World.Enums.SpellCastSource.Aura, (uint)GetSession().GameState.CurrentMapId, (uint)spellId, unitGuid.GetCounter());
+                data.SpellID = spellId;
+                data.SpellXSpellVisualID = GameData.GetSpellVisual(spellId);
+                data.Applications = applications;
+                data.Duration = duration;
+                data.Remaining = remaining;
+                data.CastLevel = 1;
+                data.Points = new List<float>();
+                data.EstimatedPoints = new List<float>();
+                ModernVersion.ConvertAuraFlags((ushort) flags, i, out modernFlags, out data.ActiveFlags);
+
+                update.Auras.Add(new AuraInfo
+                {
+                    Slot = i,
+                    AuraData = data
+                });
+            }
+            SendPacketToClient(updateEmpty);
         }
     }
 }

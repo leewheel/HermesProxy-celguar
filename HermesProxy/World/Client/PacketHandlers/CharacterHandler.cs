@@ -18,8 +18,8 @@ namespace HermesProxy.World.Client
             charEnum.IsDeletedCharacters = false;
             charEnum.IsNewPlayerRestrictionSkipped = false;
             charEnum.IsNewPlayerRestricted = false;
-            charEnum.IsNewPlayer = true;
-            charEnum.IsAlliedRacesCreationAllowed = false;
+            charEnum.IsNewPlayer = false;
+            charEnum.IsTrialAccountRestricted = false;
 
             GetSession().GameState.OwnCharacters.Clear();
 
@@ -47,8 +47,8 @@ namespace HermesProxy.World.Client
 
                 GetSession().GameState.UpdatePlayerCache(char1.Guid, cache);
 
-                char1.ZoneId = packet.ReadUInt32();
-                char1.MapId = packet.ReadUInt32();
+                char1.ZoneId = packet.ReadInt32();
+                char1.MapId = packet.ReadInt32();
                 char1.PreloadPos = packet.ReadVector3();
                 uint guildId = packet.ReadUInt32();
                 GetSession().GameState.StorePlayerGuildId(char1.Guid, guildId);
@@ -83,8 +83,8 @@ namespace HermesProxy.World.Client
                 }
 
                 // placeholders
-                char1.Flags2 = 402685956;
-                char1.Flags3 = 855688192;
+                char1.Flags2 = 0;
+                char1.Flags3 = 0;
                 char1.Flags4 = 0;
                 char1.ProfessionIds[0] = 0;
                 char1.ProfessionIds[1] = 0;
@@ -92,11 +92,11 @@ namespace HermesProxy.World.Client
                 char1.ListPosition = GetSession().AccountMetaDataMgr.GetCharacterListPosition(GetSession().Realm.Name, char1.Guid);
                 char1.SpecID = 0;
                 char1.Unknown703 = 55;
-                char1.LastLoginVersion = 11400;
+                char1.LastLoginVersion = 11201;
                 char1.OverrideSelectScreenFileDataID = 0;
                 char1.BoostInProgress = false;
                 char1.unkWod61x = 0;
-                char1.ExpansionChosen = true;
+                char1.PersonalTabard = new();
                 charEnum.Characters.Add(char1);
 
                 GetSession().GameState.OwnCharacters.Add(new OwnCharacterInfo
@@ -113,19 +113,18 @@ namespace HermesProxy.World.Client
                 });
             }
 
-            charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(1, true, false, false));
-            charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(2, true, false, false));
-            charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(3, true, false, false));
-            charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(4, true, false, false));
-            charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(5, true, false, false));
-            charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(6, true, false, false));
-            charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(7, true, false, false));
-            charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(8, true, false, false));
+
+            for (byte i = 1; i < 9; i++)
+            {
+                charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock((Race)i, true, true, true, false));
+            }
+            
             if (ModernVersion.ExpansionVersion >= 2 &&
                 LegacyVersion.ExpansionVersion >= 2)
             {
-                charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(10, true, false, false));
-                charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock(11, true, false, false));
+                // Dranei & Blood elves
+                charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock((Race)10, true, true, true, false));
+                charEnum.RaceUnlockData.Add(new EnumCharactersResult.RaceUnlock((Race)11, true, true, true, false));
             }
             SendPacketToClient(charEnum);
         }
@@ -161,7 +160,7 @@ namespace HermesProxy.World.Client
                 var fail = packet.ReadBool();
                 if (fail)
                 {
-                    response.Result = (byte)Enums.V2_5_2_39570.ResponseCodes.Failure;
+                    response.Result = (byte)Enums.V3_4_3_54261.ResponseCodes.RESPONSE_FAILURE;
                     SendPacketToClient(response);
                     return;
                 }
@@ -611,7 +610,7 @@ namespace HermesProxy.World.Client
 
             CharacterRenameResult rename = new();
             rename.Result = ModernVersion.ConvertResponseCodesValue(result);
-            if (rename.Result == (byte)Enums.V1_12_1_5875.ResponseCodes.Success)
+            if (rename.Result == (byte)Enums.V3_4_3_54261.ResponseCodes.RESPONSE_SUCCESS)
             {
                 rename.Guid = packet.ReadGuid().To128(GetSession().GameState);
                 rename.Name = packet.ReadCString();

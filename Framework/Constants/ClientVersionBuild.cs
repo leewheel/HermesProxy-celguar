@@ -54,7 +54,7 @@ namespace HermesProxy.Enums
         V3_3_3_11685 = 11685,
         V3_3_3a_11723 = 11723,
         V3_3_5_12213 = 12213,
-        V3_3_5a_12340 = 12340,
+        V3_3_5_12340 = 12340,
 
         V4_0_1_13164 = 13164,
         V4_0_1a_13205 = 13205,
@@ -523,6 +523,8 @@ namespace HermesProxy.Enums
         V2_5_3_42083 = 42083, // both live and ptr
         V2_5_3_42328 = 42328, // both live and ptr
         V2_5_3_42598 = 42598, // live
+
+        V3_4_3_54261 = 54261,
 
         // Battle.net - should probably not mix this but oh well
         BattleNetV37165 = 37165,

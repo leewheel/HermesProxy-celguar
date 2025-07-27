@@ -162,6 +162,8 @@ namespace HermesProxy.World
         private static ulong _nextUnknownTmpGuid = UNKNOWN_TMP_GUID_START;
 
         public static WowGuid128 Empty = new WowGuid128();
+        public const int SizeAsBytes = 16;
+        public const int SizeAsUint32Count = SizeAsBytes / 4;
 
         public WowGuid128()
         {

@@ -844,18 +844,18 @@ namespace HermesProxy.World.Client
                         monsterMove.SplineFlags = splineFlags.CastFlags<SplineFlagModern>();
                         hasTaxiFlightFlags = splineFlags == (SplineFlagWotLK.WalkMode | SplineFlagWotLK.Flying);
 
-                        if (splineFlags.HasAnyFlag(SplineFlagWotLK.FinalTarget))
-                        {
-                            monsterMove.FinalFacingGuid = packet.ReadGuid().To128(GetSession().GameState);
-                            monsterMove.SplineType = SplineTypeModern.FacingTarget;
-                        }
-                        else if (splineFlags.HasAnyFlag(SplineFlagWotLK.FinalOrientation))
+                        if (splineFlags.HasAnyFlag(SplineFlagWotLK.FinalOrientation))
                         {
                             monsterMove.FinalOrientation = packet.ReadFloat();
                             MovementInfo.ClampOrientation(ref monsterMove.FinalOrientation);
                             monsterMove.SplineType = SplineTypeModern.FacingAngle;
+                        } 
+                        else if (splineFlags.HasAnyFlag(SplineFlagWotLK.FinalTarget))
+                        {
+                            monsterMove.FinalFacingGuid = packet.ReadGuid().To128(GetSession().GameState);
+                            monsterMove.SplineType = SplineTypeModern.FacingTarget;
                         }
-                        else if (splineFlags.HasAnyFlag(SplineFlagWotLK.FinalPoint))
+                        else if(splineFlags.HasAnyFlag(SplineFlagWotLK.FinalPoint))
                         {
                             monsterMove.FinalFacingSpot = packet.ReadVector3();
                             monsterMove.SplineType = SplineTypeModern.FacingSpot;

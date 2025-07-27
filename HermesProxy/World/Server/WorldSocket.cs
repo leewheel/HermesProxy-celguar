@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Collections.Concurrent;
 
+using Framework;
 using Framework.Constants;
 using Framework.Cryptography;
 using Framework.IO;
@@ -28,6 +29,7 @@ using Framework.Networking;
 using Framework.Logging;
 using Framework.Realm;
 
+using HermesProxy.Enums;
 using HermesProxy.World.Enums;
 using HermesProxy.World.Server.Packets;
 using static HermesProxy.World.Server.Packets.AuthResponse;
@@ -59,6 +61,7 @@ namespace HermesProxy.World.Server
         byte[] _serverChallenge;
         WorldCrypt _worldCrypt;
         byte[] _sessionKey;
+        private byte[] _sessionKey2;
         byte[] _encryptKey;
         ConnectToKey _instanceConnectKey;
         RealmId _realmId;
@@ -251,7 +254,7 @@ namespace HermesProxy.World.Server
 
             Opcode opcode = packet.GetUniversalOpcode(true);
 
-            Log.PrintNet(LogType.Debug, LogNetDir.C2P, $"Received opcode {opcode.ToString()} ({packet.GetOpcode()}).");
+            Log.PrintNet(LogType.Network, LogNetDir.C2P, $"Received opcode {opcode.ToString()} ({packet.GetOpcode()}).");
 
             if (opcode != Opcode.CMSG_HOTFIX_REQUEST && !header.IsValidSize())
             {
@@ -480,32 +483,39 @@ namespace HermesProxy.World.Server
             // For hook purposes, we get Remoteaddress at this point.
             var address = GetRemoteIpAddress();
 
-            Sha256 digestKeyHash = new();
-            digestKeyHash.Process(GetSession().SessionKey, GetSession().SessionKey.Length);
-            if (GetSession().OS == "Wn64")
-                digestKeyHash.Finish(buildInfo.Win64AuthSeed);
-            else if (GetSession().OS == "Mc64")
-                digestKeyHash.Finish(buildInfo.Mac64AuthSeed);
-            else
+            bool TrySeed(byte[] seed)
+            {
+                Sha256 digestKeyHash = new();
+                digestKeyHash.Process(GetSession().SessionKey, GetSession().SessionKey.Length);
+                digestKeyHash.Finish(seed);
+                HmacSha256 hmac = new(digestKeyHash.Digest);
+                hmac.Process(authSession.LocalChallenge, authSession.LocalChallenge.Count);
+                hmac.Process(_serverChallenge, 16);
+                hmac.Finish(AuthCheckSeed, 16);
+
+                // Check that Key and account name are the same on client and server
+                return hmac.Digest.Compare(authSession.Digest);
+            }
+
+            if (GetSession().OS != "Wn64" && GetSession().OS != "Mc64" && GetSession().OS != "MacA" /*TODO what is windows arm?*/)
             {
                 Log.Print(LogType.Error, $"WorldSocket.HandleAuthSession: Unknown OS for account: {GetSession().GameAccountInfo.Id} ('{authSession.RealmJoinTicket}') address: {address}");
                 CloseSocket();
                 GetSession().OnDisconnect();
                 return;
             }
-
-            HmacSha256 hmac = new(digestKeyHash.Digest);
-            hmac.Process(authSession.LocalChallenge, authSession.LocalChallenge.Count);
-            hmac.Process(_serverChallenge, 16);
-            hmac.Finish(AuthCheckSeed, 16);
-
-            // Check that Key and account name are the same on client and server
-            if (!hmac.Digest.Compare(authSession.Digest))
+            
+            byte[]? platformSeed = buildInfo.BuildSeeds.GetValueOrDefault(GetSession().OS);
+            if (platformSeed == null || !TrySeed(platformSeed))
             {
-                Log.Print(LogType.Error, $"WorldSocket.HandleAuthSession: Authentication failed for account: {GetSession().GameAccountInfo.Id} ('{authSession.RealmJoinTicket}') address: {address}");
-                CloseSocket();
-                GetSession().OnDisconnect();
-                return;
+                Log.Print(LogType.Debug, $"WorldSocket.HandleAuthSession: Fallback to static seed");
+                if (!TrySeed(buildInfo.FallbackStaticSeed))
+                {
+                    Log.Print(LogType.Error, $"WorldSocket.HandleAuthSession: Authentication failed for account: {GetSession().GameAccountInfo.Id} ('{authSession.RealmJoinTicket}') address: {address}");
+                    CloseSocket();
+                    GetSession().OnDisconnect();
+                    return;
+                }
             }
 
             Sha256 keyData = new();
@@ -544,7 +554,7 @@ namespace HermesProxy.World.Server
                 return;
             }
 
-            SendPacket(new EnterEncryptedMode(_encryptKey, true));
+            SendPacket(new EnterEncryptedModeWotlk(_encryptKey, true));
             AsyncRead();
         }
 
@@ -614,7 +624,7 @@ namespace HermesProxy.World.Server
             // only first 16 bytes of the hmac are used
             Buffer.BlockCopy(encryptKeyGen.Digest, 0, _encryptKey, 0, 16);
 
-            SendPacket(new EnterEncryptedMode(_encryptKey, true));
+            SendPacket(new EnterEncryptedModeWotlk(_encryptKey, true));
             AsyncRead();
         }
 
@@ -707,6 +717,7 @@ namespace HermesProxy.World.Server
                 SendBnetConnectionState(1);
                 GetSession().AccountDataMgr = new AccountDataManager(GetSession().Username, GetSession().RealmManager.GetRealm(_realmId).Name);
                 GetSession().RealmSocket = this;
+                GetSession().GameState.IsConnectedToRealm = true;
             }
             else
             {

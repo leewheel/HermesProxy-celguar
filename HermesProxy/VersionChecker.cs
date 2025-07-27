@@ -26,8 +26,8 @@ namespace HermesProxy
                     return true;
                 case ClientVersionBuild.V2_4_3_8606:
                     return true;
-                case ClientVersionBuild.V3_3_5a_12340:
-                    return false;
+                case ClientVersionBuild.V3_3_5_12340:
+                    return true;
             }
 
             return false;
@@ -90,6 +90,8 @@ namespace HermesProxy
                 case ClientVersionBuild.V1_14_2_42214:
                 case ClientVersionBuild.V1_14_2_42597:
                     return true;
+                case ClientVersionBuild.V3_4_3_54261:
+                    return true;
             }
 
             return false;
@@ -101,12 +103,14 @@ namespace HermesProxy
             {
                 1 => ClientVersionBuild.V1_12_1_5875,
                 2 => ClientVersionBuild.V2_4_3_8606,
+                3 => ClientVersionBuild.V3_3_5_12340,
                 _ => ClientVersionBuild.Zero,
             };
         }
 
         private static byte GetExpansionVersion(ClientVersionBuild version)
         {
+            
             string str = version.ToString();
             str = str.Replace("V", "");
             str = str.Substring(0, str.IndexOf("_"));
@@ -203,8 +207,8 @@ namespace HermesProxy
                     return ClientVersionBuild.V1_12_1_5875;
                 case ClientVersionBuild.V2_4_3_8606:
                     return ClientVersionBuild.V2_4_3_8606;
-                case ClientVersionBuild.V3_3_5a_12340:
-                    return ClientVersionBuild.V3_3_5a_12340;
+                case ClientVersionBuild.V3_3_5_12340:
+                    return ClientVersionBuild.V3_3_5_12340;
             }
             return ClientVersionBuild.Zero;
         }
@@ -325,11 +329,8 @@ namespace HermesProxy
         {
             switch (Opcodes.GetOpcodesDefiningBuild(Build))
             {
-                case ClientVersionBuild.V1_12_1_5875:
-                    return typeof(World.Enums.V1_12_1_5875.ResponseCodes);
-                case ClientVersionBuild.V2_4_3_8606:
-                case ClientVersionBuild.V3_3_5a_12340:
-                    return typeof(World.Enums.V2_4_3_8606.ResponseCodes);
+                case ClientVersionBuild.V3_3_5_12340:
+                    return typeof(World.Enums.V3_3_5_12340.ResponseCodes);
             }
             return null;
         }
@@ -581,6 +582,8 @@ namespace HermesProxy
                 case ClientVersionBuild.V2_5_3_42328:
                 case ClientVersionBuild.V2_5_3_42598:
                     return ClientVersionBuild.V2_5_3_41750;
+                case ClientVersionBuild.V3_4_3_54261:
+                    return ClientVersionBuild.V3_4_3_54261;
             }
             return ClientVersionBuild.Zero;
         }
@@ -701,11 +704,8 @@ namespace HermesProxy
         {
             switch (Opcodes.GetOpcodesDefiningBuild(Build))
             {
-                case ClientVersionBuild.V2_5_2_39570:
-                    return typeof(World.Enums.V2_5_2_39570.ResponseCodes);
-                case ClientVersionBuild.V2_5_3_41750:
-                case ClientVersionBuild.V1_14_1_40688:
-                    return typeof(World.Enums.V1_14_1_40688.ResponseCodes);
+                case ClientVersionBuild.V3_4_3_54261:
+                    return typeof(World.Enums.V3_4_3_54261.ResponseCodes);
             }
             return null;
         }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -122,4 +123,67 @@ namespace HermesProxy.World.Client
         byte m_send_i, m_send_j, m_recv_i, m_recv_j;
         bool m_isInitialized;
     }
+
+    public enum AuthStatus
+    {
+        Uninitialized,
+        Ready
+    }
+
+    public class WotlkWorldCrypt : LegacyWorldCrypt
+    {
+        private static readonly byte[] encryptionKey = {
+        0xC2, 0xB3, 0x72, 0x3C, 0xC6, 0xAE, 0xD9, 0xB5,
+        0x34, 0x3C, 0x53, 0xEE, 0x2F, 0x43, 0x67, 0xCE
+    };
+        private static readonly byte[] decryptionKey = {
+        0xCC, 0x98, 0xAE, 0x04, 0xE8, 0x97, 0xEA, 0xCA,
+        0x12, 0xDD, 0xC0, 0x93, 0x42, 0x91, 0x53, 0x57
+    };
+
+        private ARC4 encryptionStream;
+        private ARC4 decryptionStream;
+
+        public AuthStatus Status { get; private set; }
+
+        public void Initialize(byte[] sessionKey)
+        {
+            // derive and drop 1024 bytes for outgoing
+            using (var hmacOut = new HMACSHA1(encryptionKey))
+                encryptionStream = new ARC4(hmacOut.ComputeHash(sessionKey));
+            encryptionStream.Process(new byte[1024], 0, 1024);
+
+            // derive and drop 1024 bytes for incoming
+            using (var hmacIn = new HMACSHA1(decryptionKey))
+                decryptionStream = new ARC4(hmacIn.ComputeHash(sessionKey));
+            decryptionStream.Process(new byte[1024], 0, 1024);
+
+            Status = AuthStatus.Ready;
+        }
+
+        public void Decrypt(byte[] data, int len)
+        {
+            if (Status == AuthStatus.Ready)
+                decryptionStream.Process(data, 0, len);
+        }
+
+        public void Encrypt(byte[] data, int len)
+        {
+            if (Status == AuthStatus.Ready)
+                encryptionStream.Process(data, 0, len);
+        }
+
+        public void Decrypt(byte[] data, int start, int count)
+        {
+            if (Status == AuthStatus.Ready)
+                decryptionStream.Process(data, start, count);
+        }
+
+        public void Encrypt(byte[] data, int start, int count)
+        {
+            if (Status == AuthStatus.Ready)
+                encryptionStream.Process(data, start, count);
+        }
+    }
+
 }
