@@ -756,99 +756,90 @@ namespace HermesProxy.World.Server
 
                 List<RaceClassAvailability> availableRaces = new List<RaceClassAvailability>();
                 RaceClassAvailability race = new RaceClassAvailability();
+                
+                // classes
+                var warrior = new ClassAvailability(Class.Warrior, 0, 0, 0);
+                var paladin = new ClassAvailability(Class.Paladin, 0, 0, 0);
+                var hunter = new ClassAvailability(Class.Hunter, 0, 0,0);
+                var rogue = new ClassAvailability(Class.Rogue, 0, 0,0);
+                var priest = new ClassAvailability(Class.Priest, 0, 0,0);
+                var dk = new ClassAvailability(Class.Deathknight, 2, 0,2);
+                var shaman = new ClassAvailability(Class.Shaman, 0, 0,0);
+                var mage = new ClassAvailability(Class.Mage, 0, 0,0);
+                var warlock = new ClassAvailability(Class.Warlock, 0, 0,0);
+                var druid = new ClassAvailability(Class.Druid, 0, 0,0);
 
-                race.RaceID = 1;
-                race.Classes.Add(new ClassAvailability(1, 0, 0));
-                race.Classes.Add(new ClassAvailability(2, 0, 0));
-                race.Classes.Add(new ClassAvailability(4, 0, 0));
-                race.Classes.Add(new ClassAvailability(5, 0, 0));
-                race.Classes.Add(new ClassAvailability(8, 0, 0));
-                race.Classes.Add(new ClassAvailability(9, 0, 0));
+                
+                race.RaceID = Race.Human;
+                race.Classes.AddRange([
+                    warrior,paladin,hunter,rogue,priest,dk,mage
+                ]);
                 availableRaces.Add(race);
 
                 race = new RaceClassAvailability();
-                race.RaceID = 2;
-                race.Classes.Add(new ClassAvailability(1, 0, 0));
-                race.Classes.Add(new ClassAvailability(3, 0, 0));
-                race.Classes.Add(new ClassAvailability(4, 0, 0));
-                race.Classes.Add(new ClassAvailability(7, 0, 0));
-                race.Classes.Add(new ClassAvailability(9, 0, 0));
+                race.RaceID = Race.Orc;
+                race.Classes.AddRange([
+                    warrior,hunter,rogue,dk,shaman,warlock
+                ]);
                 availableRaces.Add(race);
 
                 race = new RaceClassAvailability();
-                race.RaceID = 3;
-                race.Classes.Add(new ClassAvailability(1, 0, 0));
-                race.Classes.Add(new ClassAvailability(2, 0, 0));
-                race.Classes.Add(new ClassAvailability(3, 0, 0));
-                race.Classes.Add(new ClassAvailability(5, 0, 0));
-                race.Classes.Add(new ClassAvailability(4, 0, 0));
+                race.RaceID = Race.Dwarf;
+                race.Classes.AddRange([
+                    warrior,paladin,hunter,rogue,priest,dk
+                ]);
                 availableRaces.Add(race);
 
                 race = new RaceClassAvailability();
-                race.RaceID = 4;
-                race.Classes.Add(new ClassAvailability(1, 0, 0));
-                race.Classes.Add(new ClassAvailability(3, 0, 0));
-                race.Classes.Add(new ClassAvailability(4, 0, 0));
-                race.Classes.Add(new ClassAvailability(5, 0, 0));
-                race.Classes.Add(new ClassAvailability(11, 0, 0));
+                race.RaceID = Race.NightElf;
+                race.Classes.AddRange([
+                    warrior,hunter,rogue,priest,dk,mage,druid
+                ]);
                 availableRaces.Add(race);
 
                 race = new RaceClassAvailability();
-                race.RaceID = 5;
-                race.Classes.Add(new ClassAvailability(1, 0, 0));
-                race.Classes.Add(new ClassAvailability(4, 0, 0));
-                race.Classes.Add(new ClassAvailability(5, 0, 0));
-                race.Classes.Add(new ClassAvailability(8, 0, 0));
-                race.Classes.Add(new ClassAvailability(9, 0, 0));
+                race.RaceID = Race.Undead;
+                race.Classes.AddRange([
+                    warrior,rogue,priest,dk,mage,warlock
+                ]);
                 availableRaces.Add(race);
 
                 race = new RaceClassAvailability();
-                race.RaceID = 6;
-                race.Classes.Add(new ClassAvailability(1, 0, 0));
-                race.Classes.Add(new ClassAvailability(3, 0, 0));
-                race.Classes.Add(new ClassAvailability(7, 0, 0));
-                race.Classes.Add(new ClassAvailability(11, 0, 0));
+                race.RaceID = Race.Tauren;
+                race.Classes.AddRange([
+                    warrior,hunter,dk,shaman,druid
+                ]);
                 availableRaces.Add(race);
 
                 race = new RaceClassAvailability();
-                race.RaceID = 7;
-                race.Classes.Add(new ClassAvailability(1, 0, 0));
-                race.Classes.Add(new ClassAvailability(4, 0, 0));
-                race.Classes.Add(new ClassAvailability(8, 0, 0));
-                race.Classes.Add(new ClassAvailability(9, 0, 0));
+                race.RaceID = Race.Gnome;
+                race.Classes.AddRange([
+                    warrior,dk,mage,warlock,rogue
+                ]);
                 availableRaces.Add(race);
 
                 race = new RaceClassAvailability();
-                race.RaceID = 8;
-                race.Classes.Add(new ClassAvailability(1, 0, 0));
-                race.Classes.Add(new ClassAvailability(4, 0, 0));
-                race.Classes.Add(new ClassAvailability(3, 0, 0));
-                race.Classes.Add(new ClassAvailability(5, 0, 0));
-                race.Classes.Add(new ClassAvailability(7, 0, 0));
-                race.Classes.Add(new ClassAvailability(8, 0, 0));
+                race.RaceID = Race.Troll;
+                race.Classes.AddRange([
+                    warrior,hunter,dk,mage,shaman,rogue,priest
+                ]);
                 availableRaces.Add(race);
 
                 if (ModernVersion.ExpansionVersion >= 2 &&
                     LegacyVersion.ExpansionVersion >= 2)
                 {
                     race = new RaceClassAvailability();
-                    race.RaceID = 10;
-                    race.Classes.Add(new ClassAvailability(3, 0, 0));
-                    race.Classes.Add(new ClassAvailability(4, 0, 0));
-                    race.Classes.Add(new ClassAvailability(5, 0, 0));
-                    race.Classes.Add(new ClassAvailability(8, 0, 0));
-                    race.Classes.Add(new ClassAvailability(9, 0, 0));
-                    race.Classes.Add(new ClassAvailability(2, 0, 0));
+                    race.RaceID = Race.BloodElf;
+                    race.Classes.AddRange([
+                        paladin,hunter,dk,mage,rogue,priest,warlock
+                    ]);
                     availableRaces.Add(race);
 
                     race = new RaceClassAvailability();
-                    race.RaceID = 11;
-                    race.Classes.Add(new ClassAvailability(1, 0, 0));
-                    race.Classes.Add(new ClassAvailability(2, 0, 0));
-                    race.Classes.Add(new ClassAvailability(3, 0, 0));
-                    race.Classes.Add(new ClassAvailability(5, 0, 0));
-                    race.Classes.Add(new ClassAvailability(8, 0, 0));
-                    race.Classes.Add(new ClassAvailability(7, 0, 0));
+                    race.RaceID = Race.Draenei;
+                    race.Classes.AddRange([
+                        warrior,paladin,hunter,dk,mage,priest,shaman
+                    ]);
                     availableRaces.Add(race);
                 }
 
